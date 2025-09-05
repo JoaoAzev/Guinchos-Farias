@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Chamado - Guinchos</title>
+    <title>Guinchos Farias</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -72,7 +72,7 @@
     </style>
 </head>
 <body>
-    <h1>Cadastro de Chamado</h1>
+    <h1>Cadastro de Serviços</h1>
     <form id="formChamado">
         <label for="placa">Placa do Carro</label>
         <input type="text" id="placa" name="placa" placeholder="ABC-1234" required>
@@ -126,6 +126,12 @@
         const listaChamados = document.getElementById('listaChamados');
         const tabelaChamados = document.querySelector('#tabelaChamados tbody');
 
+        // 🔹 Mapeamento de IDs para nomes de motoristas
+        const motoristas = {
+            "1": "Gabriel",
+            "2": "Daniel"
+        };
+
         // Enviar cadastro
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -168,7 +174,7 @@
                                 <td>${c.marca}</td>
                                 <td>${c.modelo}</td>
                                 <td>${c.nomeCliente}</td>
-                                <td>${c.idMotorista}</td>
+                                <td>${motoristas[c.idMotorista] || c.idMotorista}</td>
                                 <td>${c.dataCadastro}</td>
                             </tr>
                         `;
