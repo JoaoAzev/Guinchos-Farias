@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guinchos Farias</title>
+    <title>Cadastro de Chamado - Guinchos</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,10 +49,30 @@
         button:hover {
             background-color: #218838;
         }
+        #listaChamados {
+            max-width: 700px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
     </style>
 </head>
 <body>
-    <h1>Cadastro de Serviços</h1>
+    <h1>Cadastro de Chamado</h1>
     <form id="formChamado">
         <label for="placa">Placa do Carro</label>
         <input type="text" id="placa" name="placa" placeholder="ABC-1234" required>
@@ -71,48 +91,95 @@
             <option value="">Selecione o motorista</option>
             <option value="1">Gabriel</option>
             <option value="2">Daniel</option>
-            <!-- Aqui você pode colocar todos os motoristas cadastrados -->
         </select>
 
         <button type="submit">Cadastrar Chamado</button>
     </form>
 
+    <!-- Botão de listar chamados -->
+    <div style="max-width: 500px; margin: auto;">
+        <button id="btnListar" style="background-color:#007bff; margin-top:15px;">📋 Listar Chamados</button>
+    </div>
+
+    <!-- Área para exibir chamados -->
+    <div id="listaChamados" style="display:none;">
+        <h2>Chamados Registrados</h2>
+        <table id="tabelaChamados">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Placa</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Cliente</th>
+                    <th>Motorista</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
     <script>
         const form = document.getElementById('formChamado');
+        const btnListar = document.getElementById('btnListar');
+        const listaChamados = document.getElementById('listaChamados');
+        const tabelaChamados = document.querySelector('#tabelaChamados tbody');
 
-    form.addEventListener('submit', function(e) {
-        e.preventDefault(); // Evita recarregar a página
+        // Enviar cadastro
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        // Pega os dados do formulário
-        const dados = {
-            placa: document.getElementById('placa').value,
-            marca: document.getElementById('marca').value,
-            modelo: document.getElementById('modelo').value,
-            nomeCliente: document.getElementById('nomeCliente').value,
-            idMotorista: document.getElementById('idMotorista').value
-        };
+            const dados = {
+                placa: document.getElementById('placa').value,
+                marca: document.getElementById('marca').value,
+                modelo: document.getElementById('modelo').value,
+                nomeCliente: document.getElementById('nomeCliente').value,
+                idMotorista: document.getElementById('idMotorista').value
+            };
 
-        // Envia os dados para o backend
-        fetch('/cadastrar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
-        })
-        .then(res => res.json())
-        .then(data => {
-            // Mostra mensagem simples de sucesso
-            alert('✅ Chamado cadastrado com sucesso!');
-
-            // Limpa os campos do formulário
-            form.reset();
-        })
-        .catch(err => {
-            console.error(err);
-            alert('❌ Ocorreu um erro ao cadastrar o chamado.');
+            fetch('/cadastrar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert('✅ Chamado cadastrado com sucesso!');
+                form.reset();
+            })
+            .catch(err => {
+                console.error(err);
+                alert('❌ Ocorreu um erro ao cadastrar o chamado.');
+            });
         });
-    });
+
+        // Listar chamados
+        btnListar.addEventListener('click', function() {
+            fetch('/chamados')
+                .then(res => res.json())
+                .then(chamados => {
+                    tabelaChamados.innerHTML = "";
+                    chamados.forEach(c => {
+                        tabelaChamados.innerHTML += `
+                            <tr>
+                                <td>${c.id}</td>
+                                <td>${c.placa}</td>
+                                <td>${c.marca}</td>
+                                <td>${c.modelo}</td>
+                                <td>${c.nomeCliente}</td>
+                                <td>${c.idMotorista}</td>
+                                <td>${c.dataCadastro}</td>
+                            </tr>
+                        `;
+                    });
+                    listaChamados.style.display = "block";
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('❌ Erro ao listar chamados.');
+                });
+        });
     </script>
 </body>
 </html>
-
-
