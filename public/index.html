@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Chamado - Guinchos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cadastro de Chamado</h1>
+    <form id="formChamado">
+        <label for="placa">Placa do Carro</label>
+        <input type="text" id="placa" name="placa" placeholder="ABC-1234" required>
+
+        <label for="marca">Marca</label>
+        <input type="text" id="marca" name="marca" placeholder="Ex: Fiat" required>
+
+        <label for="modelo">Modelo</label>
+        <input type="text" id="modelo" name="modelo" placeholder="Ex: Uno" required>
+
+        <label for="nomeCliente">Nome do Cliente</label>
+        <input type="text" id="nomeCliente" name="nomeCliente" required>
+
+        <label for="idMotorista">Motorista do Guincho</label>
+        <select id="idMotorista" name="idMotorista" required>
+            <option value="">Selecione o motorista</option>
+            <option value="1">Gabriel</option>
+            <option value="2">Daniel</option>
+            <!-- Aqui você pode colocar todos os motoristas cadastrados -->
+        </select>
+
+        <button type="submit">Cadastrar Chamado</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('formChamado');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Evita recarregar a página
+
+        // Pega os dados do formulário
+        const dados = {
+            placa: document.getElementById('placa').value,
+            marca: document.getElementById('marca').value,
+            modelo: document.getElementById('modelo').value,
+            nomeCliente: document.getElementById('nomeCliente').value,
+            idMotorista: document.getElementById('idMotorista').value
+        };
+
+        // Envia os dados para o backend
+        fetch('/cadastrar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Mostra mensagem simples de sucesso
+            alert('✅ Chamado cadastrado com sucesso!');
+
+            // Limpa os campos do formulário
+            form.reset();
+        })
+        .catch(err => {
+            console.error(err);
+            alert('❌ Ocorreu um erro ao cadastrar o chamado.');
+        });
+    });
+    </script>
+</body>
+</html>
